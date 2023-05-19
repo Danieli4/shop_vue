@@ -350,7 +350,8 @@
                                                         </div>
                                                         <div class="products-three-single-content text-center">
                                                             <span>{{ product.category.title }}</span>
-                                                            <h5><a href="shop-details-3.html"> {{ product.title }} </a>
+                                                            <h5>
+                                                                <router-link :to="{name:'products.show', params:{id: product.id} }"> {{ product.title }} </router-link>
                                                             </h5>
                                                             <p>
                                                                 <del>$200.00</del>
@@ -473,7 +474,6 @@ export default {
                 .then(res => {
                     this.products = res.data.data;
                     this.pagination = res.data.meta;
-                    console.log(this.pagination);
                 })
                 .finally(v => {
                     $(document).trigger('changed')
