@@ -221,7 +221,8 @@
                                                             <div class="products-grid-one__badge-box"> <span
                                                                     class="bg_base badge new ">New</span>
                                                             </div>
-                                                            <a href="cart.html" class="addcart btn--primary style2">
+                                                            <a @click.prevent="addToCart(product.id, true) " href="cart.html"
+                                                               class="addcart btn--primary style2">
                                                                 Add To Cart </a>
                                                             <div class="products-grid__usefull-links">
                                                                 <ul>
@@ -325,7 +326,7 @@
                                                                                         <span class="increaseQty"> <i
                                                                                                 class="flaticon-plus"></i>
                                                                                     </span></div>
-                                                                                    <button class="btn--primary "> Add
+                                                                                    <button @click.prevent="addToCart(product.id)" class="btn--primary "> Add
                                                                                         to
                                                                                         Cart
                                                                                     </button>
@@ -351,7 +352,10 @@
                                                         <div class="products-three-single-content text-center">
                                                             <span>{{ product.category.title }}</span>
                                                             <h5>
-                                                                <router-link :to="{name:'products.show', params:{id: product.id} }"> {{ product.title }} </router-link>
+                                                                <router-link
+                                                                        :to="{name:'products.show', params:{id: product.id} }">
+                                                                    {{ product.title }}
+                                                                </router-link>
                                                             </h5>
                                                             <p>
                                                                 <del>$200.00</del>
@@ -434,6 +438,35 @@ export default {
         }
     },
     methods: {
+
+        addToCart(id, isSingle) {
+            let qty = isSingle ? 1 : $('.qtyValue').val()
+            let cart = localStorage.getItem('cart');
+            $('.qtyValue').val(1)
+
+            let newProduct = [
+                {
+                    'id': id,
+                    'qty': qty
+                }
+            ]
+            if (!cart) {
+                localStorage.setItem('cart', JSON.stringify(newProduct))
+            } else{
+                cart = JSON.parse(cart);
+
+                cart.forEach(productInCart=>{
+                    if (productInCart.id === id ){
+                        productInCart.qty = Number(productInCart.qty)+ Number(qty)
+                        newProduct = null;
+                    }
+                })
+                Array.prototype.push.apply(cart, newProduct);
+                localStorage.setItem('cart', JSON.stringify(cart));
+
+                console.log(cart);
+            }
+        },
         getProductList() {
             let prices = $('#priceRange').val()
             this.prices = prices.replace(/[\s+]|[$]/g, '').split('-')
